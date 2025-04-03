@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { NotificationCenterComponent } from './in-app-notifications/notification-center.component';
+import { NotificationService } from './in-app-notifications/notification.service';
+import { AnalyticsDashboardComponent } from './analytics/analytics-dashboard-new.component';
 
 @Component({
   selector: 'app-root',

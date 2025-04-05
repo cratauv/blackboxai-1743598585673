@@ -1,0 +1,11 @@
+{
+  "welcome": "Bienvenue",
+  "login": "Connexion",
+  "register": "S'inscrire",
+  "currency": "Devise",
+  "language": "Langue",
+  "book_now": "Réserver maintenant",
+  "my_bookings": "Mes réservations",
+  "profile": "Profil",
+  "logout": "Déconnexion"
+}

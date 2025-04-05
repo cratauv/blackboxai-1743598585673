@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { LocalizationModule } from './localization/localization.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
@@ -16,7 +17,8 @@ import { AnalyticsDashboardComponent } from './analytics/analytics-dashboard-new
     BrowserModule,
     HttpClientModule,
     BookingOptionsModule,
-    EmailNotificationsModule
+    EmailNotificationsModule,
+    LocalizationModule
   ],
   providers: [],
   bootstrap: [AppComponent]

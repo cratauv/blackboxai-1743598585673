@@ -1,0 +1,11 @@
+{
+  "welcome": "Bienvenido",
+  "login": "Iniciar sesión",
+  "register": "Registrarse",
+  "currency": "Moneda",
+  "language": "Idioma",
+  "book_now": "Reservar ahora",
+  "my_bookings": "Mis reservas",
+  "profile": "Perfil",
+  "logout": "Cerrar sesión"
+}

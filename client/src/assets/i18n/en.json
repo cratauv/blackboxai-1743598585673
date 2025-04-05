@@ -1,0 +1,11 @@
+{
+  "welcome": "Welcome",
+  "login": "Login",
+  "register": "Register",
+  "currency": "Currency",
+  "language": "Language",
+  "book_now": "Book Now",
+  "my_bookings": "My Bookings",
+  "profile": "Profile",
+  "logout": "Logout"
+}

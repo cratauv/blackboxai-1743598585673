@@ -1,72 +1,80 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { BookingOption } from '../booking-options.service';
 
 @Component({
   selector: 'app-booking-option-card',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   template: `
-    <div class="booking-card">
-      <img [src]="option.imageUrl" [alt]="option.name" class="card-image">
-      <div class="card-content">
-        <h3>{{ option.name }}</h3>
-        <div class="rating">
-          <span *ngFor="let star of [1,2,3,4,5]">
-            {{ star <= option.rating ? '★' : '☆' }}
+    <div class="card" [class.selected]="isSelected">
+      <div class="card-header">
+        <h3>{{option.name}}</h3>
+        <span class="price">{{option.price | currency}}</span>
+      </div>
+      <div class="card-body">
+        <p>{{option.description}}</p>
+        <div class="features" *ngIf="option.features">
+          <span *ngFor="let feature of option.features" class="feature-badge">
+            {{feature}}
           </span>
         </div>
-        <p class="description">{{ option.description | truncate:100 }}</p>
-        <div class="details">
-          <span class="price">{{ option.price | currency }}</span>
-          <span class="duration">{{ option.duration }} mins</span>
-        </div>
-        <a [routerLink]="['/bookings', option.id]" class="book-button">Book Now</a>
+      </div>
+      <div class="card-footer">
+        <button (click)="onSelect()">Select</button>
       </div>
     </div>
   `,
   styles: [`
-    .booking-card {
+    .card {
       border: 1px solid #ddd;
       border-radius: 8px;
-      overflow: hidden;
-      transition: transform 0.2s;
-    }
-    .booking-card:hover {
-      transform: translateY(-5px);
-    }
-    .card-image {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-    }
-    .card-content {
       padding: 1rem;
+      margin: 0.5rem;
+      transition: all 0.2s;
     }
-    .rating {
-      color: gold;
-      margin: 0.5rem 0;
+    .card.selected {
+      border-color: #3f51b5;
+      background-color: #f5f5f5;
     }
-    .details {
+    .card-header {
       display: flex;
       justify-content: space-between;
-      margin: 1rem 0;
+      align-items: center;
+      margin-bottom: 0.5rem;
     }
     .price {
       font-weight: bold;
-      font-size: 1.2rem;
+      color: #3f51b5;
     }
-    .book-button {
-      display: block;
-      text-align: center;
-      background: #3498db;
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    .feature-badge {
+      background: #e0e0e0;
+      padding: 0.25rem 0.5rem;
+      border-radius: 16px;
+      font-size: 0.8rem;
+    }
+    button {
+      background: #3f51b5;
       color: white;
-      padding: 0.5rem;
+      border: none;
+      padding: 0.5rem 1rem;
       border-radius: 4px;
-      text-decoration: none;
+      cursor: pointer;
     }
   `]
 })
 export class BookingOptionCardComponent {
-  @Input() option: any;
+  @Input() option!: BookingOption;
+  @Input() isSelected = false;
+  @Output() selected = new EventEmitter<BookingOption>();
+
+  onSelect() {
+    this.selected.emit(this.option);
+  }
 }

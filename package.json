@@ -2,6 +2,7 @@
   "dependencies": {
     "@angular/common": "^19.2.4",
     "@angular/core": "^19.2.4",
+    "@angular/forms": "^19.2.6",
     "bcryptjs": "^3.0.2",
     "chart.js": "^4.4.8",
     "colors": "^1.4.0",

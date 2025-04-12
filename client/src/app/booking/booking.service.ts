@@ -1,7 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { BookingOption } from '../booking-options/booking-options.service';
 
-interface BookingDetails {
+export interface BookingDetails {
   optionId: string;
   date: string;
   time: string;
@@ -9,14 +11,14 @@ interface BookingDetails {
   paymentInfo: PaymentInfo;
 }
 
-interface CustomerInfo {
+export interface CustomerInfo {
   name: string;
   email: string;
   phone: string;
   specialRequests?: string;
 }
 
-interface PaymentInfo {
+export interface PaymentInfo {
   cardNumber: string;
   expiry: string;
   cvv: string;
@@ -34,5 +36,9 @@ export class BookingService {
 
   getCurrentBooking() {
     return this.currentBooking;
+  }
+
+  getBookingOptions(): Observable<BookingOption[]> {
+    return this.http.get<BookingOption[]>('/api/booking-options');
   }
 }

@@ -1,0 +1,102 @@
+<div class="container mx-auto p-4">
+  <!-- Filter Controls -->
+  <div class="mb-6 bg-white p-4 rounded-lg shadow">
+    <div class="flex flex-col md:flex-row gap-4">
+      <!-- Language Filter -->
+      <div class="w-full md:w-48">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Language</label>
+        <select formControlName="language" class="w-full px-4 py-2 border rounded">
+          <option value="">All Languages</option>
+          <option *ngFor="let lang of ['en','es','fr']" [value]="lang">{{ lang | uppercase }}</option>
+        </select>
+      </div>
+
+      <!-- Rating Filter -->
+      <div class="w-full md:w-48">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Minimum Rating</label>
+        <select formControlName="minRating" class="w-full px-4 py-2 border rounded">
+          <option value="0">Any Rating</option>
+          <option *ngFor="let rating of [1,2,3,4,5]" [value]="rating">{{ rating }}+ Stars</option>
+        </select>
+      </div>
+
+      <!-- Sort By -->
+      <div class="w-full md:w-48">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
+        <select formControlName="sortBy" class="w-full px-4 py-2 border rounded">
+          <option value="date">Newest First</option>
+          <option value="rating">Highest Rating</option>
+        </select>
+      </div>
+
+      <!-- Apply Button -->
+      <div class="flex items-end">
+        <button (click)="onFilterChange()" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+          Apply
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Review Cards -->
+  <div *ngIf="filteredReviews$ | async as reviews; else loadingState" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div *ngFor="let review of reviews" class="bg-white shadow rounded-lg p-4">
+      <!-- User Info -->
+      <div class="flex items-center mb-3">
+        <img [src]="review.user.avatar || 'https://images.pexels.com/photos/733836/pexels-photo-733836.jpeg'" 
+             alt="User avatar"
+             class="w-10 h-10 rounded-full mr-3 object-cover">
+        <div>
+          <div class="font-medium">{{ review.user.name }}</div>
+          <div class="text-gray-500 text-sm">{{ review.createdAt | date:'mediumDate' }}</div>
+        </div>
+      </div>
+
+      <!-- Rating -->
+      <div class="flex items-center mb-2">
+        <div class="flex mr-2">
+          <span *ngFor="let star of getStarArray(review.rating); let i = index" 
+                class="text-yellow-400 text-lg">
+            {{ star === 1 ? '★' : '☆' }}
+          </span>
+        </div>
+        <span class="text-gray-600">{{ review.rating }}/5</span>
+      </div>
+
+      <!-- Comment -->
+      <p class="text-gray-700 mb-3">{{ review.comment }}</p>
+
+      <!-- Language Tag -->
+      <div class="flex justify-between items-center">
+        <span class="px-2 py-1 bg-gray-100 rounded-full text-xs">
+          {{ review.language | uppercase }}
+        </span>
+        <span *ngIf="review.status === 'pending'" class="text-xs text-yellow-600">Pending Approval</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading/Error States -->
+  <ng-template #loadingState>
+    <div *ngIf="loading" class="text-center py-8">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mb-2"></div>
+      <div>Loading reviews...</div>
+    </div>
+    <div *ngIf="error" class="text-red-500 text-center py-4">
+      {{ error }}
+    </div>
+  </ng-template>
+
+  <!-- Pagination -->
+  <div *ngIf="totalItems > itemsPerPage" class="flex justify-center mt-6">
+    <div class="flex gap-1">
+      <button *ngFor="let page of [].constructor(Math.ceil(totalItems/itemsPerPage)); let i = index"
+              (click)="onPageChange(i+1)"
+              [class.bg-blue-500]="currentPage === i+1"
+              [class.text-white]="currentPage === i+1"
+              class="px-3 py-1 border rounded hover:bg-gray-100">
+        {{ i+1 }}
+      </button>
+    </div>
+  </div>
+</div>

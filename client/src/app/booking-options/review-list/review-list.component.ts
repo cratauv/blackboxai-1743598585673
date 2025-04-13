@@ -1,9 +1,15 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { BookingOptionsService } from '../booking-options.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 interface Review {
   _id: string;
-  user: any;
+  user: {
+    name: string;
+    avatar?: string;
+  };
   rating: number;
   comment: string;
   language: string;
@@ -13,50 +19,68 @@ interface Review {
 
 @Component({
   selector: 'app-review-list',
-  template: `
-    <div class="reviews">
-      <div *ngFor="let review of reviews" class="review-card">
-        <div class="review-header">
-          <span class="rating">Rating: {{review.rating}}/5</span>
-          <span class="language">{{review.language | uppercase}}</span>
-        </div>
-        <p class="comment">{{review.comment}}</p>
-        <div class="review-footer">
-          <span class="user">{{review.user?.name}}</span>
-          <span class="date">{{review.createdAt | date}}</span>
-        </div>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .reviews {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      padding: 20px;
-    }
-    .review-card {
-      border: 1px solid #eee;
-      padding: 15px;
-      border-radius: 5px;
-    }
-    .review-header {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-    .review-footer {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 10px;
-      font-size: 0.8em;
-      color: #666;
-    }
-    .rating {
-      font-weight: bold;
-    }
-  `]
+  templateUrl: './review-list.component.html',
+  styleUrls: ['./review-list.component.css']
 })
-export class ReviewListComponent {
+export class ReviewListComponent implements OnInit {
   @Input() reviews: Review[] = [];
+  filteredReviews$: Observable<Review[]> | null = null;
+  loading = false;
+  error: string | null = null;
+  filterForm: FormGroup;
+  currentPage = 1;
+  itemsPerPage = 5;
+  totalItems = 0;
+
+  constructor(
+    private bookingService: BookingOptionsService,
+    private fb: FormBuilder
+  ) {
+    this.filterForm = this.fb.group({
+      language: [''],
+      minRating: [0],
+      sortBy: ['date']
+    });
+  }
+
+  ngOnInit(): void {
+    this.fetchReviews();
+  }
+
+  fetchReviews(): void {
+    this.loading = true;
+    this.error = null;
+    
+    const params = {
+      page: this.currentPage,
+      limit: this.itemsPerPage,
+      ...this.filterForm.value
+    };
+
+    this.filteredReviews$ = this.bookingService.getReviews(params).pipe(
+      map(response => {
+        this.totalItems = response.total;
+        return response.data;
+      }),
+      catchError(err => {
+        this.error = 'Failed to load reviews. Please try again later.';
+        return of([]);
+      })
+    );
+    this.loading = false;
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.fetchReviews();
+  }
+
+  onFilterChange(): void {
+    this.currentPage = 1;
+    this.fetchReviews();
+  }
+
+  getStarArray(rating: number): number[] {
+    return Array(5).fill(0).map((_, i) => i < rating ? 1 : 0);
+  }
 }

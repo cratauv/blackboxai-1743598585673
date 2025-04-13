@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export interface BookingOption {
   id: string;
@@ -11,6 +12,24 @@ export interface BookingOption {
   category: string;
   imageUrl: string;
   rating: number;
+}
+
+interface Review {
+  _id: string;
+  user: {
+    name: string;
+    avatar?: string;
+  };
+  rating: number;
+  comment: string;
+  language: string;
+  status: string;
+  createdAt: Date;
+}
+
+interface ReviewsResponse {
+  data: Review[];
+  total: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -29,5 +48,16 @@ export class BookingOptionsService {
 
   getOptionDetails(id: string): Observable<BookingOption> {
     return this.http.get<BookingOption>(`/api/booking-options/${id}`);
+  }
+
+  getReviews(params: any): Observable<ReviewsResponse> {
+    let httpParams = new HttpParams();
+    Object.keys(params).forEach(key => {
+      if (params[key] !== null && params[key] !== undefined) {
+        httpParams = httpParams.append(key, params[key]);
+      }
+    });
+
+    return this.http.get<ReviewsResponse>('/api/reviews', { params: httpParams });
   }
 }

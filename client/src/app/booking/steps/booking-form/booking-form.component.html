@@ -1,0 +1,128 @@
+<div class="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+  <h2 class="text-2xl font-bold mb-6">New Booking</h2>
+  
+  <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
+    <!-- Property Selection -->
+    <div class="mb-4">
+      <label class="block text-gray-700 mb-2">Select Property</label>
+      <select formControlName="propertyId" class="w-full px-3 py-2 border rounded" required
+              (change)="onPropertySelect($event)">
+        <option value="">Select a property</option>
+        <option *ngFor="let property of properties" [value]="property.id">
+          {{property.name}}
+        </option>
+      </select>
+    </div>
+
+    <!-- Property Details -->
+    <div class="mb-4 p-4 bg-gray-50 rounded" *ngIf="selectedProperty">
+      <h3 class="text-lg font-semibold mb-2">Property Details</h3>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label>Address</label>
+          <input type="text" formControlName="propertyDetails.address" 
+                 class="w-full px-3 py-2 border rounded" readonly>
+        </div>
+        <div>
+          <label>Amenities</label>
+          <input type="text" formControlName="propertyDetails.amenities" 
+                 class="w-full px-3 py-2 border rounded" readonly>
+        </div>
+        <div>
+          <label>Capacity</label>
+          <input type="number" formControlName="propertyDetails.capacity" 
+                 class="w-full px-3 py-2 border rounded" readonly>
+        </div>
+      </div>
+    </div>
+
+    <!-- Date Selection -->
+    <div class="grid grid-cols-2 gap-4 mb-4">
+      <div>
+        <label class="block text-gray-700 mb-2">Check-in Date</label>
+        <input type="date" formControlName="checkInDate" 
+               class="w-full px-3 py-2 border rounded" required>
+      </div>
+      <div>
+        <label class="block text-gray-700 mb-2">Check-out Date</label>
+        <input type="date" formControlName="checkOutDate" 
+               class="w-full px-3 py-2 border rounded" required>
+      </div>
+    </div>
+
+    <!-- Guests Section -->
+    <div class="mb-4">
+      <label class="block text-gray-700 mb-2">Guests</label>
+      <div class="flex space-x-4">
+        <div class="w-1/3">
+          <label>Adults</label>
+          <input type="number" formControlName="guests.adults" 
+                 class="w-full px-3 py-2 border rounded" min="1" required>
+        </div>
+        <div class="w-1/3">
+          <label>Children</label>
+          <input type="number" formControlName="guests.children" 
+                 class="w-full px-3 py-2 border rounded" min="0">
+        </div>
+        <div class="w-1/3">
+          <label>Infants</label>
+          <input type="number" formControlName="guests.infants" 
+                 class="w-full px-3 py-2 border rounded" min="0">
+        </div>
+      </div>
+    </div>
+
+    <!-- Special Requests -->
+    <div class="mb-4">
+      <label class="block text-gray-700 mb-2">Special Requests</label>
+      <textarea formControlName="specialRequests" 
+                class="w-full px-3 py-2 border rounded"></textarea>
+    </div>
+
+    <!-- Payment Method -->
+    <div class="mb-4">
+      <label class="block text-gray-700 mb-2">Payment Method</label>
+      <select formControlName="paymentMethod" 
+              class="w-full px-3 py-2 border rounded" required>
+        <option value="">Select a payment method</option>
+        <option value="credit_card">Credit Card</option>
+        <option value="paypal">PayPal</option>
+      </select>
+    </div>
+
+    <!-- Customer Info -->
+    <div class="mb-4">
+      <h3 class="text-lg font-semibold mb-2">Customer Information</h3>
+      <label class="block text-gray-700 mb-2">Name</label>
+      <input type="text" formControlName="customerInfo.name" 
+             class="w-full px-3 py-2 border rounded" required>
+      <label class="block text-gray-700 mb-2">Email</label>
+      <input type="email" formControlName="customerInfo.email" 
+             class="w-full px-3 py-2 border rounded" required>
+      <label class="block text-gray-700 mb-2">Phone</label>
+      <input type="text" formControlName="customerInfo.phone" 
+             class="w-full px-3 py-2 border rounded" required>
+    </div>
+
+    <!-- Payment Info -->
+    <div class="mb-4">
+      <h3 class="text-lg font-semibold mb-2">Payment Information</h3>
+      <label class="block text-gray-700 mb-2">Card Number</label>
+      <input type="text" formControlName="paymentInfo.cardNumber" 
+             class="w-full px-3 py-2 border rounded" required>
+      <label class="block text-gray-700 mb-2">Expiry Date</label>
+      <input type="text" formControlName="paymentInfo.expiry" 
+             class="w-full px-3 py-2 border rounded" required>
+      <label class="block text-gray-700 mb-2">CVV</label>
+      <input type="text" formControlName="paymentInfo.cvv" 
+             class="w-full px-3 py-2 border rounded" required>
+    </div>
+
+    <button 
+      class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+      type="submit"
+    >
+      Confirm Booking
+    </button>
+  </form>
+</div>
